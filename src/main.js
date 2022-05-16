@@ -7,6 +7,13 @@ function forEach(arr, callback) {
         callback(arr[i]);
     }
 }
+
+
+function iterateObject(obj, callback) {
+    for (var i = 0, l = obj.count(); i < l; i += 1) {
+        callback(obj[i])
+    }
+}
 // ------------------------------------------------
 
 var doc = app.activeDocument;
@@ -49,15 +56,20 @@ function defineDocVar(docVarName, content) {
     );
 }
 
-defineDocVar('_Test Name', 'UPD2: Test Content');
+// defineDocVar('_Test Name', 'Mock Data');
+
 // -------------------- create document's variables
 
-// // TODO: iterate object
-// function getDocInks() {
-//     var items = doc.inks.everyItem().name; // object
-//     alert(items);
-//     // return doc.inks.everyItem(); // .name // object
-// }
+// TODO: iterate object
+function getDocInks() {
+    var items = doc.inks // object
+    iterateObject(items, function (item) {
+        alert(item.name + ":" + item.angle)
+        // TODO arr push
+    })
+    // TODO return arr
+}
+getDocInks()
 
 // function putInksToStorage() {
 //     forEach(getDocInks(), function(item) {
@@ -65,7 +77,7 @@ defineDocVar('_Test Name', 'UPD2: Test Content');
 //         return content;
 //     });
 // }
-// alert(putInksToStorage());
+// alert(putInksToStorage().toString());
 
 // defineDocVar('inkStorage_0', putInksToStorage());
 
