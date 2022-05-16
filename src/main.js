@@ -19,18 +19,18 @@ function handleNoInks() {
 }
 
 // CREATE DOCUMENT'S VARIABLES --------------------
-function checkDocVarExist(varName) {
-    return docVars.itemByName(varName).isValid;
+function isExistVar(docVarName) {
+    return docVars.itemByName(docVarName).isValid;
 }
 
-function addDocVar(varName, callback) {
-    if (!checkDocVarExist(varName)) {
+function addDocVar(docVarName, content, callback) {
+    if (!isExistVar(docVarName)) {
         var docVarItem = docVars.add({
-            name: varName
+            name: docVarName
         });
-        callback(docVarItem); // add variable's content
+        callback(docVarItem, content); // add variable's content
     } else {
-        callback(varName); // update variable's content
+        callback(docVarName, content); // update variable's content
     }
 }
 
@@ -38,17 +38,18 @@ function addDocVarContent(docVarItem, content) {
     docVars.itemByName(docVarItem).variableOptions.contents = content;
 }
 
-function defineDocVar(varName, content) {
+function defineDocVar(docVarName, content) {
     addDocVar(
-        varName,
+        docVarName,
+        content,
         // callback
-        function(docVarItem) {
-            addDocVarContent(docVarItem, content);
+        function(docVarItem, content) {
+            addDocVarContent(docVarName, content);
         },
     );
 }
 
-defineDocVar('Test Name', 'Test Content');
+defineDocVar('_Test Name', 'UPD2: Test Content');
 // -------------------- create document's variables
 
 // // TODO: iterate object
