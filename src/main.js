@@ -19,16 +19,17 @@ function iterateObject(obj, callback) {
 }
 
 // ------------------------------------------------
+// STORE DOCUMENT'S INKS PROPERTIES INTO TEXT VARIABLE
 
 var doc = app.activeDocument;
 var docVars = doc.textVariables;
 
-var initialInks = [];
+var inksAngles = [];
 var modifiedInks = [];
 
-function handleNoInks() {
-    alert('There are no inks in the document');
-}
+// function handleNoInks() {
+//     alert('There are no inks in the document');
+// }
 
 // CREATE DOCUMENT'S TEXT VARIABLES --------------------
 function isExistVar(docVarName) {
@@ -36,51 +37,52 @@ function isExistVar(docVarName) {
 }
 
 function createDocVar(docVarName, content, callback) {
-    if (!isExistVar(docVarName)) {
-        var docVarItem = docVars.add({
-            name: docVarName
-        });
-        callback(docVarItem, content); // add variable's content
-    } else {
-        callback(docVarName, content); // update variable's content
-    }
+    var docVarItem = docVars.add({
+        name: docVarName
+    });
+    callback(docVarItem.name, content); // add variable's content
 }
 
 function modifyDocVarContent(docVarItem, content) {
     docVars.itemByName(docVarItem).variableOptions.contents = content;
 }
 
-function defineNewDocVar(docVarName, content) {
-    createDocVar(
-        docVarName,
-        content,
-        /* callback */ function(docVarItem, content) {
-            modifyDocVarContent(docVarName, content);
-        },
-    );
+function defineDocVar(docVarName, content) {
+    if (!isExistVar(docVarName)) {
+        createDocVar(
+            docVarName,
+            content,
+            /* callback */
+            function(name, content) {
+                modifyDocVarContent(name, content);
+            },
+        );
+    } else {
+        return
+        // modifyDocVarContent(docVarName, content);
+    }
 }
 
-// defineNewDocVar('_Test Name', 'Mock Data');
+// defineDocVar('_Test Name', 'Mock Data');
 
 // -------------------- create document's variables
 
-function getDocInks() {
+function storeInksAngles() {
     var items = doc.inks // object
-    iterateObject(items, /* callback */ function (item) {
-        initialInks.push(item.name + ":" + item.angle)
+    iterateObject(items, /* callback */ function(item) {
+        inksAngles.push(item.name + ":" + item.angle)
     })
-        return initialInks.toString()
+    return inksAngles.toString()
 }
 
-defineNewDocVar('initialInks', getDocInks());
+defineDocVar('inksAngles', storeInksAngles());
 
-// var c = doc.inks.itemByName('Process Cyan');
-// alert(c.angle);
+// ------------------------------------------------
+// READ PROPS FROM VAR
 
-// // var storedInkItem = inkValues.variableOptions.contents.split(',');
-// var arr1 = [];
-// var inkObj = {};
-// var init = { c: 1, m: 2, y: 3, k: 4 };
+var storedAngles = docVars.itemByName('inksAngles').variableOptions.contents.split(',')
+
+// alert(storedAngles[3])
 
 // // convert string into array
 // for (var i = 0, l = storedInkItem.length; i < l; i += 1) {
@@ -92,9 +94,9 @@ defineNewDocVar('initialInks', getDocInks());
 //   arr1.push(item);
 // });
 
-// // finally convert into object: map ink to angle
-// for (var i = 0, l = arr1.length; i < l; i += 1) {
-//   var kv = arr1[i].split(':');
-//   inkObj[kv[0]] = kv[1];
-// }
-// alert(inkObj.toSource());
+// finally convert into object: map ink to angle
+for (var i = 0, l = arr1.length; i < l; i += 1) {
+    var kv = arr1[i].split(':');
+    inkObj[kv[0]] = kv[1];
+}
+alert(inkObj.toSource());
